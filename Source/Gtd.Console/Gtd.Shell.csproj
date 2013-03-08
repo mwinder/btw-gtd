@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Commands\ArchiveThoughtCommand.cs" />
     <Compile Include="Commands\CaptureThoughtCommand.cs" />
+    <Compile Include="Commands\DefineActionCommand.cs" />
     <Compile Include="Commands\DefineProjectCommand.cs" />
     <Compile Include="Commands\ExitCommand.cs" />
     <Compile Include="Commands\HelpCommand.cs" />
@@ -57,6 +58,7 @@
     <Compile Include="ILogger.cs" />
     <Compile Include="InMemoryStore.cs" />
     <Compile Include="IConsoleCommand.cs" />
+    <Compile Include="MatchHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Projections\ConsoleProjection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

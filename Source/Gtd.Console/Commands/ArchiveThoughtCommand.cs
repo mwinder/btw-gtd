@@ -20,7 +20,6 @@ namespace Gtd.Shell.Commands
         public string Usage { get { return @"archive <thought-id>
     Archives thought from the inbox (hiding it from there). You need to provide first digits of thought id."; } }
 
-
         public void Execute(ConsoleEnvironment env, string[] args)
         {
             if (args.Length == 0)
@@ -31,7 +30,7 @@ namespace Gtd.Shell.Commands
 
             var inbox = env.ConsoleView.Systems[env.Id].Thoughts;
 
-            var matches = inbox.Where(t => Matches(t.ItemId, args[0])).ToArray();
+            var matches = inbox.Where(t => t.ItemId.Matches(args[0])).ToArray();
             if (matches.Length == 0)
             {
                 env.Log.Error("Nothing to archive");
@@ -44,11 +43,6 @@ namespace Gtd.Shell.Commands
                 return;
             }
             env.Log.Error("{0} thoughts match '{1}' criteria.", matches.Length, args[0]);
-        }
-
-        static bool Matches(Guid id, string match)
-        {
-            return id.ToString().ToLowerInvariant().Replace("-", "").StartsWith(match);
         }
     }
 }

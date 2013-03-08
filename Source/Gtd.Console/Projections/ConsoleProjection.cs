@@ -19,12 +19,19 @@ namespace Gtd.Shell.Projections
     {
         public ProjectId ProjectId;
         public string Outcome;
+        public IList<Action> Actions = new List<Action>();
+    }
+
+    public sealed class Action
+    {
+        public ActionId ActionId;
+        public string Outcome;
     }
 
     public sealed class TrustedSystem
     {
-        public List<Thought> Thoughts = new List<Thought>(); 
-        public List<Project> Projects = new List<Project>(); 
+        public List<Thought> Thoughts = new List<Thought>();
+        public List<Project> Projects = new List<Project>();
 
         public void CaptureThought(Guid thoughtId, string thought, DateTime date)
         {
@@ -35,12 +42,12 @@ namespace Gtd.Shell.Projections
                     Subject = thought
                 });
         }
+
         public void ArchiveThought(Guid thoughtId)
         {
             Thoughts.RemoveAll(t => t.ItemId == thoughtId);
         }
 
-       
         public void DefineProject(ProjectId projectId, string projectOutcome)
         {
             Projects.Add(new Project
@@ -48,6 +55,13 @@ namespace Gtd.Shell.Projections
                     ProjectId = projectId,
                     Outcome = projectOutcome
                 });
+        }
+
+        public void DefineAction(ProjectId projectId, ActionId actionId, string outcome)
+        {
+            var project = Projects.Find(x => x.ProjectId == projectId);
+
+            project.Actions.Add(new Action { ActionId = actionId, Outcome = outcome });
         }
     }
 
@@ -69,6 +83,7 @@ namespace Gtd.Shell.Projections
         {
             Update(evnt.Id, s => s.CaptureThought(evnt.ThoughtId, evnt.Thought, evnt.TimeUtc));
         }
+
         public void When(ThoughtArchived evnt)
         {
             Update(evnt.Id, s => s.ArchiveThought(evnt.ThoughtId));
@@ -77,6 +92,11 @@ namespace Gtd.Shell.Projections
         public void When(ProjectDefined evnt)
         {
             Update(evnt.Id, s => s.DefineProject(evnt.ProjectId, evnt.ProjectOutcome));
+        }
+
+        public void When(ActionDefined e)
+        {
+            Update(e.Id, s => s.DefineAction(e.ProjectId, e.ActionId, e.Outcome));
         }
     }
 }
